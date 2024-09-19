@@ -55,54 +55,16 @@ function createFloorsUI(floors, lifts, liftSystem) {
     }
 }
 
-        // // Create a single floor UI
-        // function createFloorDiv(floorNumber, totalFloors) {
-        //     let floorDiv = document.createElement('div');
-        //     floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full', 'sm:h-16', 'md:h-16');
-
-        //     let floorLabel = createFloorLabel(floorNumber);
-        //     floorDiv.appendChild(floorLabel);
-
-        //     let buttonContainer = document.createElement('div');
-        //     buttonContainer.classList.add('floor-button-container');
-
-        //     if (floorNumber === 0) {
-        //         buttonContainer.appendChild(createUpButton(floorNumber));
-        //     } else if (floorNumber === totalFloors) {
-        //         buttonContainer.appendChild(createDownButton(floorNumber));
-        //     } else {
-        //         buttonContainer.appendChild(createUpButton(floorNumber));
-        //         buttonContainer.appendChild(createDownButton(floorNumber));
-        //     }
-        //     // Use Tailwind's responsive flex classes to make the layout responsive
-        //     buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', 'md:space-x-2');
-
-        //     floorDiv.appendChild(buttonContainer);
-
-        //     return floorDiv;
-        // }
-
-
-        // // Create a label for the floor
-        // function createFloorLabel(floorNumber) {
-        //     let floorLabel = document.createElement('div');
-        //     floorLabel.classList.add('md:mr-6', 'text-right', 'text-sm', 'sm:text-base', 'md:text-lg', 'sm:w-8', 'sm:mr-4');
-        //     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
-        //     return floorLabel;
-        // }
-
 // Create a single floor UI
 function createFloorDiv(floorNumber, totalFloors) {
     let floorDiv = document.createElement('div');
-    // Use relative positioning for the floor div to properly position child elements
     floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full', 'sm:h-16', 'md:h-16');
 
-    // Add the background floor label
     let floorLabel = createFloorLabel(floorNumber);
     floorDiv.appendChild(floorLabel);
 
     let buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('floor-button-container', 'relative', 'z-10'); // Ensure buttons are on top of the label
+    buttonContainer.classList.add('floor-button-container');
 
     if (floorNumber === 0) {
         buttonContainer.appendChild(createUpButton(floorNumber));
@@ -112,21 +74,19 @@ function createFloorDiv(floorNumber, totalFloors) {
         buttonContainer.appendChild(createUpButton(floorNumber));
         buttonContainer.appendChild(createDownButton(floorNumber));
     }
-
     // Use Tailwind's responsive flex classes to make the layout responsive
     buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', 'md:space-x-2');
 
-    // Append button container after the label
     floorDiv.appendChild(buttonContainer);
 
     return floorDiv;
 }
 
+
 // Create a label for the floor
 function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
-    // Center the label in the middle of the floor div, behind the content
-    floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'text-3xl', 'font-bold', 'z-0', 'opacity-20');
+    floorLabel.classList.add('md:mr-6', 'text-right', 'text-sm', 'sm:text-base', 'md:text-lg', 'sm:w-8', 'sm:mr-4');
     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
     return floorLabel;
 }
