@@ -54,43 +54,6 @@ function createFloorsUI(floors, lifts, liftSystem) {
         liftSystem.appendChild(floorDiv);
     }
 }
-
-        // // Create a single floor UI
-        // function createFloorDiv(floorNumber, totalFloors) {
-        //     let floorDiv = document.createElement('div');
-        //     floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full', 'sm:h-16', 'md:h-16');
-
-        //     let floorLabel = createFloorLabel(floorNumber);
-        //     floorDiv.appendChild(floorLabel);
-
-        //     let buttonContainer = document.createElement('div');
-        //     buttonContainer.classList.add('floor-button-container');
-
-        //     if (floorNumber === 0) {
-        //         buttonContainer.appendChild(createUpButton(floorNumber));
-        //     } else if (floorNumber === totalFloors) {
-        //         buttonContainer.appendChild(createDownButton(floorNumber));
-        //     } else {
-        //         buttonContainer.appendChild(createUpButton(floorNumber));
-        //         buttonContainer.appendChild(createDownButton(floorNumber));
-        //     }
-        //     // Use Tailwind's responsive flex classes to make the layout responsive
-        //     buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', 'md:space-x-2');
-
-        //     floorDiv.appendChild(buttonContainer);
-
-        //     return floorDiv;
-        // }
-
-
-        // // Create a label for the floor
-        // function createFloorLabel(floorNumber) {
-        //     let floorLabel = document.createElement('div');
-        //     floorLabel.classList.add('md:mr-6', 'text-right', 'text-sm', 'sm:text-base', 'md:text-lg', 'sm:w-8', 'sm:mr-4');
-        //     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
-        //     return floorLabel;
-        // }
-
 // Create a single floor UI
 function createFloorDiv(floorNumber, totalFloors) {
     let floorDiv = document.createElement('div');
@@ -114,7 +77,7 @@ function createFloorDiv(floorNumber, totalFloors) {
     }
 
     // Use Tailwind's responsive flex classes to make the layout responsive
-    buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', 'md:space-x-2');
+    // buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', );
 
     // Append button container after the label
     floorDiv.appendChild(buttonContainer);
@@ -126,7 +89,7 @@ function createFloorDiv(floorNumber, totalFloors) {
 function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
     // Center the label in the middle of the floor div, behind the content
-    floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'text-3xl', 'font-bold', 'z-0', 'opacity-20');
+    floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'text-3xl', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
     return floorLabel;
 }
@@ -135,14 +98,14 @@ function createFloorLabel(floorNumber) {
 // Create an 'Up' button
 function createUpButton(floor) {
     let upButton = document.createElement('button');
-    upButton.classList.add('bg-green-500', 'text-white', 'px-4', 'py-1', 'rounded', 'up-button', 'text-xs', 'sm:text-sm', 'md:text-base', 'sm:px-1.5', 'md:px-4', 'py-1.5');
+    upButton.classList.add('bg-green-500', 'text-white', 'px-1', 'py-1', 'rounded', 'up-button', 'sm:px-1.5', 'md:px-4', 'py-1.5');
     upButton.dataset.floor = floor;
 
     // Create an image element for the "up" icon
     let upIcon = document.createElement('img');
     upIcon.src = './up-arrow.png'; // Set the path to your PNG file
     upIcon.alt = 'Up';
-    upIcon.classList.add('h-4', 'w-4', 'md:h-6', 'md:w-6'); // Adjust the size of the image
+    upIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2'); // Adjust the size of the image
 
     // Append the image to the button
     upButton.appendChild(upIcon);
@@ -155,13 +118,13 @@ function createUpButton(floor) {
 // Create a 'Down' button
 function createDownButton(floor) {
     let downButton = document.createElement('button');
-    downButton.classList.add('bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'down-button', 'text-xs', 'sm:text-sm', 'md:text-base', 'sm:px-2', 'md:px-4', 'py-1.5');
+    downButton.classList.add('bg-red-500', 'text-white', 'px-1', 'py-1', 'rounded', 'down-button', 'sm:px-1.5', 'md:px-4', 'py-1.5');
     downButton.dataset.floor = floor;
     // Create an image element for the "up" icon
     let downIcon = document.createElement('img');
     downIcon.src = './down-arrow.png'; // Set the path to your PNG file
     downIcon.alt = 'Down';
-    downIcon.classList.add('h-4', 'w-4', 'md:h-6', 'md:w-6'); // Adjust the size of the image
+    downIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2'); // Adjust the size of the image
 
     // Append the image to the button
     downButton.appendChild(downIcon);
