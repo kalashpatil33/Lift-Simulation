@@ -58,58 +58,76 @@ function createFloorsUI(floors, lifts, liftSystem) {
 // Create a single floor UI
 function createFloorDiv(floorNumber, totalFloors) {
     let floorDiv = document.createElement('div');
-    floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full');
+    floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full', 'sm:h-16', 'md:h-16');
 
     let floorLabel = createFloorLabel(floorNumber);
     floorDiv.appendChild(floorLabel);
 
-    // Create a container to hold the buttons in a vertical layout
     let buttonContainer = document.createElement('div');
     buttonContainer.classList.add('floor-button-container');
-    buttonContainer.style.marginBottom = "20px"; // Adding explicit margin
 
     if (floorNumber === 0) {
-        buttonContainer.appendChild(createUpButton(floorNumber)); // Only up button for ground floor
+        buttonContainer.appendChild(createUpButton(floorNumber));
     } else if (floorNumber === totalFloors) {
-        buttonContainer.appendChild(createDownButton(floorNumber)); // Only down button for top floor
+        buttonContainer.appendChild(createDownButton(floorNumber));
     } else {
-        buttonContainer.appendChild(createUpButton(floorNumber)); // Both up and down buttons for other floors
+        buttonContainer.appendChild(createUpButton(floorNumber));
         buttonContainer.appendChild(createDownButton(floorNumber));
     }
+    // Use Tailwind's responsive flex classes to make the layout responsive
+    buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', 'md:space-x-2');
 
-    // Append the button container to the floorDiv
     floorDiv.appendChild(buttonContainer);
 
     return floorDiv;
 }
 
 
-
 // Create a label for the floor
 function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
-    floorLabel.classList.add('mr-6', 'w-32', 'text-right');
+    floorLabel.classList.add('md:mr-6', 'text-right', 'text-sm', 'sm:text-base', 'md:text-lg', 'sm:w-8', 'sm:mr-4');
     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
     return floorLabel;
 }
 
+
 // Create an 'Up' button
 function createUpButton(floor) {
     let upButton = document.createElement('button');
-    upButton.classList.add('bg-green-500', 'text-white', 'px-2', 'py-1', 'rounded', 'up-button');
+    upButton.classList.add('bg-green-500', 'text-white', 'px-4', 'py-1', 'rounded', 'up-button', 'text-xs', 'sm:text-sm', 'md:text-base', 'sm:px-1.5', 'md:px-4', 'py-1.5');
     upButton.dataset.floor = floor;
-    upButton.innerText = 'Up';
+
+    // Create an image element for the "up" icon
+    let upIcon = document.createElement('img');
+    upIcon.src = './up-arrow.png'; // Set the path to your PNG file
+    upIcon.alt = 'Up';
+    upIcon.classList.add('h-4', 'w-4', 'md:h-6', 'md:w-6'); // Adjust the size of the image
+
+    // Append the image to the button
+    upButton.appendChild(upIcon);
+
     return upButton;
 }
+
+
 
 // Create a 'Down' button
 function createDownButton(floor) {
     let downButton = document.createElement('button');
-    downButton.classList.add('bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'down-button');
+    downButton.classList.add('bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'down-button', 'text-xs', 'sm:text-sm', 'md:text-base', 'sm:px-2', 'md:px-4', 'py-1.5');
     downButton.dataset.floor = floor;
-    downButton.innerText = 'Down';
+    // Create an image element for the "up" icon
+    let downIcon = document.createElement('img');
+    downIcon.src = './down-arrow.png'; // Set the path to your PNG file
+    downIcon.alt = 'Down';
+    downIcon.classList.add('h-4', 'w-4', 'md:h-6', 'md:w-6'); // Adjust the size of the image
+
+    // Append the image to the button
+    downButton.appendChild(downIcon);
     return downButton;
 }
+
 
 // Create the lift container for the Ground floor
 function createLiftContainer(lifts) {
