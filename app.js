@@ -84,7 +84,7 @@ function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
     // Center the label in the middle of the floor div, behind the content
     floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
-    floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
+    floorLabel.innerText =  `Floor ${floorNumber}`;
     return floorLabel;
 }
 
