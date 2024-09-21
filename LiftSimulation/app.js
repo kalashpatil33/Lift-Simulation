@@ -47,7 +47,7 @@ function createFloorsUI(floors, lifts, liftSystem) {
 
         // Add lift containers to the Ground Floor
         if (i === 0) {
-            let liftContainer = createLiftContainer(lifts);
+            let liftContainer = createLiftContainer((floors === 1) ? 1 : lifts);
             floorDiv.appendChild(liftContainer);
         }
 
@@ -58,14 +58,12 @@ function createFloorsUI(floors, lifts, liftSystem) {
 function createFloorDiv(floorNumber, totalFloors) {
     let floorDiv = document.createElement('div');
     // Use relative positioning for the floor div to properly position child elements
-    floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'h-16', 'w-full', 'sm:h-16', 'md:h-16');
-
+    floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'floor-div');
     // Add the background floor label
     let floorLabel = createFloorLabel(floorNumber);
     floorDiv.appendChild(floorLabel);
-
     let buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('floor-button-container', 'relative', 'z-10'); // Ensure buttons are on top of the label
+    buttonContainer.classList.add('floor-button-container', 'relative', 'z-30'); // Ensure buttons are on top of the label
 
     if (floorNumber === 0) {
         buttonContainer.appendChild(createUpButton(floorNumber));
@@ -75,10 +73,6 @@ function createFloorDiv(floorNumber, totalFloors) {
         buttonContainer.appendChild(createUpButton(floorNumber));
         buttonContainer.appendChild(createDownButton(floorNumber));
     }
-
-    // Use Tailwind's responsive flex classes to make the layout responsive
-    // buttonContainer.classList.add('flex', 'flex-col', 'items-center', 'sm:flex-row', 'sm:space-x-2', );
-
     // Append button container after the label
     floorDiv.appendChild(buttonContainer);
 
@@ -89,7 +83,7 @@ function createFloorDiv(floorNumber, totalFloors) {
 function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
     // Center the label in the middle of the floor div, behind the content
-    floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'text-3xl', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
+    floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
     floorLabel.innerText = floorNumber === 0 ? 'Ground Floor' : `Floor ${floorNumber}`;
     return floorLabel;
 }
@@ -98,7 +92,7 @@ function createFloorLabel(floorNumber) {
 // Create an 'Up' button
 function createUpButton(floor) {
     let upButton = document.createElement('button');
-    upButton.classList.add('bg-green-500', 'text-white', 'px-1', 'py-1', 'rounded', 'up-button', 'sm:px-1.5', 'md:px-4', 'py-1.5');
+    upButton.classList.add('bg-green-500', 'lift-button', 'up-button');
     upButton.dataset.floor = floor;
 
     // Create an image element for the "up" icon
@@ -118,14 +112,13 @@ function createUpButton(floor) {
 // Create a 'Down' button
 function createDownButton(floor) {
     let downButton = document.createElement('button');
-    downButton.classList.add('bg-red-500', 'text-white', 'px-1', 'py-1', 'rounded', 'down-button', 'sm:px-1.5', 'md:px-4', 'py-1.5');
+    downButton.classList.add('bg-red-500', 'lift-button', 'down-button');
     downButton.dataset.floor = floor;
     // Create an image element for the "up" icon
     let downIcon = document.createElement('img');
     downIcon.src = './down-arrow.png'; // Set the path to your PNG file
     downIcon.alt = 'Down';
     downIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2'); // Adjust the size of the image
-
     // Append the image to the button
     downButton.appendChild(downIcon);
     return downButton;
@@ -141,14 +134,13 @@ function createLiftContainer(lifts) {
         let liftDiv = createLiftDiv(j + 1);
         liftContainer.appendChild(liftDiv);
     }
-
     return liftContainer;
 }
 
 // Create an individual lift UI
 function createLiftDiv(id) {
     let liftDiv = document.createElement('div');
-    liftDiv.classList.add('w-12', 'h-12', 'bg-gray-400', 'flex', 'items-center', 'justify-center', 'lift');
+    liftDiv.classList.add('w-12', 'bg-gray-400', 'flex', 'items-center', 'justify-center', 'lift');
     liftDiv.dataset.id = id;
     liftDiv.dataset.currentFloor = 0;
 
@@ -215,17 +207,23 @@ function findNearestAvailableLift(targetFloor) {
 // Move the lift to the target floor
 function moveLift(lift, targetFloor, button) {
     if (lift.isMoving) return;
-
     lift.isMoving = true;
     lift.targetFloor = targetFloor;
+
+    // Dynamically calculate the floor height
+    const floorElement = document.querySelector('.floor-div');
+    let floorHeight = floorElement ? floorElement.getBoundingClientRect().height : 120; // Default to 120 if not found
+    // floorHeight = 115;
+
+    // console.log(floorHeight);
     const distance = Math.abs(lift.currentFloor - targetFloor);
     const travelTime = distance * 2000; // 2 seconds per floor
+    console.log(targetFloor, distance, travelTime);
     const liftElement = document.querySelector(`.lift[data-id="${lift.id}"]`);
 
     // Set up animation
-    const floorHeight = 80;
     liftElement.style.transition = `transform ${travelTime}ms linear`;
-    liftElement.style.transform = `translateY(-${targetFloor * floorHeight}px)`;
+    liftElement.style.transform = `translateY(-${(targetFloor * (floorHeight + 16))}px)`;
 
     setTimeout(() => {
         lift.currentFloor = targetFloor;

@@ -13,16 +13,14 @@
         position: relative;
         width: 4rem; /* Default width */
         height: 6rem; /* Default height */
-        background: linear-gradient(180deg, #f6f4f4, #333);
+        background: linear-gradient(180deg, #ffffff, #d3a4a4);
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         overflow: hidden;
       }
-
       .lift-system {
         margin-top: 32px;
       }
-
       .door {
         position: absolute;
         top: 0;
@@ -32,79 +30,91 @@
         border: 1px solid #444;
         transition: transform 2.5s ease-in-out;
       }
-
       .left-door {
         left: 0;
         transform-origin: center right;
       }
-
       .right-door {
         right: 0;
         transform-origin: center left;
       }
-
       .animate-door-open-left {
         transform: translateX(-100%);
       }
-
       .animate-door-open-right {
         transform: translateX(100%);
       }
-
       .animate-door-close-left,
       .animate-door-close-right {
         transform: translateX(0);
       }
-
       .bg-gray-500 {
         background-color: #6b7280;
         cursor: not-allowed;
       }
-
       /* Styles for buttons and floors */
       .floor-button-container {
         display: flex;
         flex-direction: column;
         margin-right: 24px;
       }
-
       .floor-button:hover {
         transform: scale(1.05);
       }
-
       .floor-button.up {
         background-color: #38a169;
       }
-
       .floor-button.down {
         background-color: #e53e3e;
-        
       }
-
       .floor-button.disabled {
         background-color: #6b7280;
         cursor: not-allowed;
       }
-
+      .floor-div {
+        width: 100%;
+        height: 6rem;
+      }
+      .lift-button {
+        padding-left: 1rem; /* px-1 */
+        padding-right: 1rem; /* px-1 */
+        padding-top: 1rem; /* py-1.5 */
+        padding-bottom: 1rem; /* py-1.5 */
+        border-radius: 0.25rem; /* rounded */
+        z-index: 20;
+      } 
       /* Media queries for responsiveness */
       @media (max-width: 640px) {
         .lift {
           width: 3rem; /* Smaller width for mobile */
-          height: 4.5rem; /* Smaller height for mobile */
+          height: 4rem; /* Smaller height for mobile */
         }
-
+        .floor-div {
+          width: 100%;
+          height: 6rem;
+        }
         .floor-button-container {
           margin-right: 8px;
         }
-
         .floor-label {
           font-size: 0.8rem;
+        }
+        .lift-button {
+          padding-left: 0.575rem; /* sm:px-1.5 */
+          padding-right: 0.575rem; /* sm:px-1.5 */
+          padding-top: 0.575rem; /* py-1.5 */
+          padding-bottom: 0.575rem; /* py-1.5 */
+          z-index: 20;
         }
       }
       @media (max-width: 480px) {
         .lift {
           width: 2.5rem; /* Further reduce width */
           height: 4rem; /* Further reduce height */
+        }
+        .floor-div {
+          width: auto !important;
+          height: 4rem;
         }
 
         .floor-button {
@@ -118,10 +128,18 @@
         .floor-label {
           font-size: 0.2rem;
         }
+        .lift-button {
+          padding-left: 1rem; /* px-1 */
+          padding-right: 1rem; /* px-1 */
+          padding-top: 1rem; /* py-1.5 */
+          padding-bottom: 1rem; /* py-1.5 */
+          border-radius: 0.25rem; /* rounded */
+        }
       }
     </style>
   </head>
-  <body class="display-flex flex-col bg-gray-200 p-6 flex items-center justify-center min-h-screen">
+  <body
+    class="display-flex flex-col bg-gray-200 p-6 flex items-center justify-center min-h-screen">
     <div class="controls bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
       <h1 class="text-2xl font-semibold mb-4 text-center">Lift Simulation</h1>
       <label for="floors" class="block mb-2 font-medium">
@@ -149,12 +167,10 @@
         Generate UI
       </button>
     </div>
-
     <div
-      id="lift-system"
-      class="lift-system flex flex-col-reverse items-start mt-8"
-    ></div>
-
+    id="lift-system"
+    class="lift-system flex flex-col-reverse items-start mt-8"
+  ></div>
     <script src="app.js"></script>
   </body>
 </html>
