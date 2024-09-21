@@ -83,6 +83,11 @@
         border-radius: 0.25rem; /* rounded */
         z-index: 20;
       }
+      .lift-container {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem;
+      }
       /* Media queries for responsiveness */
       @media (max-width: 640px) {
         .lift {
@@ -106,6 +111,11 @@
           padding-bottom: 0.575rem; /* py-1.5 */
           z-index: 20;
         }
+        .lift-container {
+          display: flex;
+          gap: 0.5rem;
+          padding: 0.25rem;
+        }
       }
       @media (max-width: 480px) {
         .lift {
@@ -117,21 +127,24 @@
           height: 4rem;
         }
 
-  
-
         .floor-button-container {
-          margin-right: 4px;
+          margin-right: 5px;
         }
         .floor-label {
-          font-size: 0.2rem;
+          font-size: 0.1rem;
         }
         .lift-button {
           padding-left: 0.5rem; /* px-1 */
-          padding-right: 0.5rem; /* px-1 */
+          padding-right: 0.4rem; /* px-1 */
           padding-top: 0.5rem; /* py-1.5 */
           padding-bottom: 0.5rem; /* py-1.5 */
           border-radius: 0.25rem; /* rounded */
-           z-index: 20;
+          z-index: 40;
+        }
+        .lift-container {
+          display: flex;
+          gap: 0.25rem;
+          padding: 0.1rem;
         }
       }
     </style>

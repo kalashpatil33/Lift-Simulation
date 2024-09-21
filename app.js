@@ -63,7 +63,7 @@ function createFloorDiv(floorNumber, totalFloors) {
     let floorLabel = createFloorLabel(floorNumber);
     floorDiv.appendChild(floorLabel);
     let buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('floor-button-container', 'relative', 'z-30'); // Ensure buttons are on top of the label
+    buttonContainer.classList.add('floor-button-container', 'relative', 'z-40'); // Ensure buttons are on top of the label
 
     if (floorNumber === 0) {
         buttonContainer.appendChild(createUpButton(floorNumber));
@@ -84,7 +84,7 @@ function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
     // Center the label in the middle of the floor div, behind the content
     floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
-    floorLabel.innerText =  `Floor ${floorNumber}`;
+    floorLabel.innerText = `Floor ${floorNumber}`;
     return floorLabel;
 }
 
@@ -128,9 +128,13 @@ function createDownButton(floor) {
 // Create the lift container for the Ground floor
 function createLiftContainer(lifts) {
     let liftContainer = document.createElement('div');
-    liftContainer.classList.add('relative', 'flex', 'gap-4', 'p-2');
+    liftContainer.classList.add('relative', 'lift-container');
 
     for (let j = 0; j < lifts; j++) {
+        // if (j == 0)
+        //     liftContainer.classList.add('relative', 'flex', 'gap-4', 'p-1');
+        // else {
+        // }
         let liftDiv = createLiftDiv(j + 1);
         liftContainer.appendChild(liftDiv);
     }
