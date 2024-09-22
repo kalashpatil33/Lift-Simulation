@@ -23,8 +23,7 @@ document.getElementById('generate').addEventListener('click', function () {
 // Lift Data Store
 const liftDataStore = {
     lifts: [], // Stores the current state of each lift
-    requests: {}, // Track requests (button press)
-    taskQueue: [] // Queue to handle multiple floor requests
+    taskQueue: [], // Queue to handle multiple floor requests
 };
 
 // Initialize the lifts with their default positions (Ground floor)
@@ -34,16 +33,16 @@ function initializeLifts(lifts) {
         liftDataStore.lifts.push({
             id: i + 1,
             currentFloor: 0, // Starting at Ground Floor
-            isMoving: false,
-            targetFloor: null
+            isMoving: false, // Indicates whether the lift is in transit
+            targetFloor: null // Holds the target floor of the lift
         });
     }
 }
 
 // Create the floors UI
 function createFloorsUI(floors, lifts, liftSystem) {
-    for (let i = 0; i <= floors; i++) {
-        let floorDiv = createFloorDiv(i, floors);
+    for (let i = 0; i < floors; i++) { 
+        let floorDiv = createFloorDiv(i, floors - 1); // Create a floor box
 
         // Add lift containers to the Ground Floor
         if (i === 0) {
@@ -54,14 +53,16 @@ function createFloorsUI(floors, lifts, liftSystem) {
         liftSystem.appendChild(floorDiv);
     }
 }
+
 // Create a single floor UI
 function createFloorDiv(floorNumber, totalFloors) {
     let floorDiv = document.createElement('div');
-    // Use relative positioning for the floor div to properly position child elements
     floorDiv.classList.add('flex', 'items-center', 'border', 'border-black', 'p-4', 'mb-4', 'relative', 'floor-div');
+
     // Add the background floor label
     let floorLabel = createFloorLabel(floorNumber);
     floorDiv.appendChild(floorLabel);
+
     let buttonContainer = document.createElement('div');
     buttonContainer.classList.add('floor-button-container', 'relative', 'z-40'); // Ensure buttons are on top of the label
 
@@ -73,21 +74,18 @@ function createFloorDiv(floorNumber, totalFloors) {
         buttonContainer.appendChild(createUpButton(floorNumber));
         buttonContainer.appendChild(createDownButton(floorNumber));
     }
-    // Append button container after the label
-    floorDiv.appendChild(buttonContainer);
 
+    floorDiv.appendChild(buttonContainer);
     return floorDiv;
 }
 
 // Create a label for the floor
 function createFloorLabel(floorNumber) {
     let floorLabel = document.createElement('div');
-    // Center the label in the middle of the floor div, behind the content
     floorLabel.classList.add('absolute', 'inset-0', 'flex', 'items-center', 'justify-center', 'text-gray-700', 'font-bold', 'z-0', 'opacity-20', 'sm:text-1xl', 'md:text-3xl');
     floorLabel.innerText = `Floor ${floorNumber}`;
     return floorLabel;
 }
-
 
 // Create an 'Up' button
 function createUpButton(floor) {
@@ -95,35 +93,29 @@ function createUpButton(floor) {
     upButton.classList.add('bg-green-500', 'lift-button', 'up-button');
     upButton.dataset.floor = floor;
 
-    // Create an image element for the "up" icon
     let upIcon = document.createElement('img');
     upIcon.src = './up-arrow.png'; // Set the path to your PNG file
     upIcon.alt = 'Up';
-    upIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2'); // Adjust the size of the image
+    upIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2');
 
-    // Append the image to the button
     upButton.appendChild(upIcon);
-
     return upButton;
 }
-
-
 
 // Create a 'Down' button
 function createDownButton(floor) {
     let downButton = document.createElement('button');
     downButton.classList.add('bg-red-500', 'lift-button', 'down-button');
     downButton.dataset.floor = floor;
-    // Create an image element for the "up" icon
+
     let downIcon = document.createElement('img');
     downIcon.src = './down-arrow.png'; // Set the path to your PNG file
     downIcon.alt = 'Down';
-    downIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2'); // Adjust the size of the image
-    // Append the image to the button
+    downIcon.classList.add('h-2', 'w-2', 'md:h-2', 'md:w-2');
+
     downButton.appendChild(downIcon);
     return downButton;
 }
-
 
 // Create the lift container for the Ground floor
 function createLiftContainer(lifts) {
@@ -131,10 +123,6 @@ function createLiftContainer(lifts) {
     liftContainer.classList.add('relative', 'lift-container');
 
     for (let j = 0; j < lifts; j++) {
-        // if (j == 0)
-        //     liftContainer.classList.add('relative', 'flex', 'gap-4', 'p-1');
-        // else {
-        // }
         let liftDiv = createLiftDiv(j + 1);
         liftContainer.appendChild(liftDiv);
     }
@@ -144,11 +132,10 @@ function createLiftContainer(lifts) {
 // Create an individual lift UI
 function createLiftDiv(id) {
     let liftDiv = document.createElement('div');
-    liftDiv.classList.add('w-12', 'bg-gray-400', 'flex', 'items-center', 'justify-center', 'lift');
+    liftDiv.classList.add('w-12', 'bg-gray-400', 'flex', 'items-center', 'justify-center', 'lift', 'mx-2'); // Added mx-2 for spacing
     liftDiv.dataset.id = id;
     liftDiv.dataset.currentFloor = 0;
 
-    // Add doors for visual effect
     let leftDoor = document.createElement('div');
     leftDoor.classList.add('left-door', 'door');
     liftDiv.appendChild(leftDoor);
@@ -165,69 +152,51 @@ function attachButtonListeners() {
     document.querySelectorAll('.up-button, .down-button').forEach(button => {
         button.addEventListener('click', function () {
             const floor = parseInt(this.dataset.floor);
-            handleFloorRequest(floor, this);
+            const direction = this.classList.contains('up-button') ? 'up' : 'down'; // Determine direction
+            handleFloorRequest(floor, this, direction);
         });
     });
 }
 
 // Handle the floor request when a button is clicked
-function handleFloorRequest(floor, button) {
+function handleFloorRequest(floor, button, direction) {
     button.classList.add('bg-gray-500');
     button.disabled = true;
-    liftDataStore.requests[floor] = button;
-    liftDataStore.taskQueue.push(floor);
-    processNextTask();
+
+    liftDataStore.taskQueue.push({ floor, direction, button });
+
+    processNextTask(); // Ensure task processing starts
 }
 
 // Process the next task in the queue
 function processNextTask() {
-    const nextFloor = liftDataStore.taskQueue.shift();
-    if (nextFloor === undefined) return;
-
-    const availableLift = findNearestAvailableLift(nextFloor);
-    if (availableLift !== null) {
-        moveLift(availableLift, nextFloor, liftDataStore.requests[nextFloor]);
-    }
-}
-
-// Find the nearest available lift
-function findNearestAvailableLift(targetFloor) {
-    let nearestLift = null;
-    let minDistance = Infinity;
+    if (liftDataStore.taskQueue.length === 0) return;
 
     liftDataStore.lifts.forEach(lift => {
-        if (!lift.isMoving) {
-            const distance = Math.abs(lift.currentFloor - targetFloor);
-            if (distance < minDistance) {
-                nearestLift = lift;
-                minDistance = distance;
-            }
+        if (!lift.isMoving && liftDataStore.taskQueue.length > 0) {
+            const nextTask = liftDataStore.taskQueue.shift();
+            const { floor, button, direction } = nextTask;
+
+            moveLift(lift, floor, button, direction);
         }
     });
-
-    return nearestLift;
 }
 
 // Move the lift to the target floor
-function moveLift(lift, targetFloor, button) {
+function moveLift(lift, targetFloor, button, direction) {
     if (lift.isMoving) return;
+
     lift.isMoving = true;
     lift.targetFloor = targetFloor;
 
-    // Dynamically calculate the floor height
     const floorElement = document.querySelector('.floor-div');
-    let floorHeight = floorElement ? floorElement.getBoundingClientRect().height : 120; // Default to 120 if not found
-    // floorHeight = 115;
-
-    // console.log(floorHeight);
+    let floorHeight = floorElement ? floorElement.getBoundingClientRect().height : 120; // Default to 120px if not found
     const distance = Math.abs(lift.currentFloor - targetFloor);
     const travelTime = distance * 2000; // 2 seconds per floor
-    console.log(targetFloor, distance, travelTime);
-    const liftElement = document.querySelector(`.lift[data-id="${lift.id}"]`);
 
-    // Set up animation
+    const liftElement = document.querySelector(`.lift[data-id="${lift.id}"]`);
     liftElement.style.transition = `transform ${travelTime}ms linear`;
-    liftElement.style.transform = `translateY(-${(targetFloor * (floorHeight + 16))}px)`;
+    liftElement.style.transform = `translateY(-${(targetFloor * (floorHeight + 16))}px)`; // Adjust to layout
 
     setTimeout(() => {
         lift.currentFloor = targetFloor;
@@ -235,13 +204,13 @@ function moveLift(lift, targetFloor, button) {
             setTimeout(() => {
                 closeLiftDoors(liftElement, () => {
                     lift.isMoving = false;
-                    lift.targetFloor = null;
                     button.classList.remove('bg-gray-500');
                     button.disabled = false;
-                    delete liftDataStore.requests[targetFloor];
-                    processNextTask();
+                    lift.targetFloor = null;
+
+                    processNextTask(); // Continue with the next task in the queue
                 });
-            }, 2500); // 2.5 seconds for doors open
+            }, 2500); // Keep doors open for 2.5 seconds
         });
     }, travelTime);
 }
@@ -250,13 +219,15 @@ function moveLift(lift, targetFloor, button) {
 function openLiftDoors(liftElement, callback) {
     const leftDoor = liftElement.querySelector('.left-door');
     const rightDoor = liftElement.querySelector('.right-door');
-    leftDoor.classList.add('animate-door-open-left');
-    rightDoor.classList.add('animate-door-open-right');
+
+    leftDoor.style.transition = 'transform 2.5s';
+    rightDoor.style.transition = 'transform 2.5s';
+
+    leftDoor.style.transform = 'translateX(-100%)';
+    rightDoor.style.transform = 'translateX(100%)';
 
     setTimeout(() => {
-        leftDoor.classList.remove('animate-door-open-left');
-        rightDoor.classList.remove('animate-door-open-right');
-        callback();
+        if (callback) callback();
     }, 2500);
 }
 
@@ -264,12 +235,11 @@ function openLiftDoors(liftElement, callback) {
 function closeLiftDoors(liftElement, callback) {
     const leftDoor = liftElement.querySelector('.left-door');
     const rightDoor = liftElement.querySelector('.right-door');
-    leftDoor.classList.add('animate-door-close-left');
-    rightDoor.classList.add('animate-door-close-right');
+
+    leftDoor.style.transform = 'translateX(0)';
+    rightDoor.style.transform = 'translateX(0)';
 
     setTimeout(() => {
-        leftDoor.classList.remove('animate-door-close-left');
-        rightDoor.classList.remove('animate-door-close-right');
-        callback();
+        if (callback) callback();
     }, 2500);
 }
