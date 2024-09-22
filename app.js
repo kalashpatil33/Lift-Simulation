@@ -172,14 +172,36 @@ function handleFloorRequest(floor, button, direction) {
 function processNextTask() {
     if (liftDataStore.taskQueue.length === 0) return;
 
-    liftDataStore.lifts.forEach(lift => {
-        if (!lift.isMoving && liftDataStore.taskQueue.length > 0) {
-            const nextTask = liftDataStore.taskQueue.shift();
-            const { floor, button, direction } = nextTask;
+    // Find the nearest idle lift for each task
+    const nextTask = liftDataStore.taskQueue.shift();
+    const { floor, button, direction } = nextTask;
 
-            moveLift(lift, floor, button, direction);
+    const nearestLift = findNearestIdleLift(floor);
+
+    if (nearestLift) {
+        moveLift(nearestLift, floor, button, direction);
+    } else {
+        // If no lift is idle, requeue the task and check again later
+        liftDataStore.taskQueue.unshift(nextTask);
+    }
+}
+
+// Find the nearest idle lift to the requested floor
+function findNearestIdleLift(targetFloor) {
+    let nearestLift = null;
+    let shortestDistance = Infinity;
+
+    liftDataStore.lifts.forEach(lift => {
+        if (!lift.isMoving) {
+            const distance = Math.abs(lift.currentFloor - targetFloor);
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                nearestLift = lift;
+            }
         }
     });
+
+    return nearestLift;
 }
 
 // Move the lift to the target floor
@@ -214,6 +236,7 @@ function moveLift(lift, targetFloor, button, direction) {
         });
     }, travelTime);
 }
+
 
 // Open the lift doors
 function openLiftDoors(liftElement, callback) {
